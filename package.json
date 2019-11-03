@@ -1,0 +1,21 @@
+{
+  "name": "codeinstant",
+  "version": "1.0.0",
+  "description": "CodeInstant",
+  "main": "index.html",
+  "scripts": {
+    "build": "node ./build/build.js",
+    "start": "http-server ./  -c-1"
+  },
+  "author": "guyoung",
+  "homepage": "https://github.com/guyoung/CodeInstant",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guyoung/CodeInstant.git"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "http-server": "^0.9.0"
+  }
+}
