@@ -151,9 +151,9 @@ var CodeComponent = Vue.component('code-component', {
 
     methods: {
         load() {
-            var htmlUrl = '/data' + this.$route.path + '/index.html';
-            var styleUrl = '/data' + this.$route.path + '/style.css';
-            var javascriptUrl = '/data' + this.$route.path + '/main.js';
+            var htmlUrl = 'data' + this.$route.path + '/index.html';
+            var styleUrl = 'data' + this.$route.path + '/style.css';
+            var javascriptUrl = 'data' + this.$route.path + '/main.js';
 
             Vue.axios.get(htmlUrl).then((response) => {
                 this.htmlContent = response.data               

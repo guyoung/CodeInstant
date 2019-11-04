@@ -50,7 +50,7 @@ var PageComponent = Vue.component('page-component', {
 
     methods: {
         load() {
-            var url = '/data' + this.$route.path + '/index.md';
+            var url = 'data' + this.$route.path + '/index.md';
     
             Vue.axios.get(url).then((response) => {
                 this.content = response.data
