@@ -14,8 +14,8 @@
     "url": "git+https://github.com/guyoung/CodeInstant.git"
   },
   "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {
-    "http-server": "^0.9.0"
-  }
+  "dependencies": {
+    "http-server": "^0.11.1"
+  },
+  "devDependencies": {}
 }
