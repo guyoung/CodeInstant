@@ -11,56 +11,80 @@
     <meta name="x5-fullscreen" content="true" />
     <meta name="360-fullscreen" content="true" />
 
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/material-design-icons-iconfont@5.0.1/dist/material-design-icons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.x/css/font-awesome.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/codemirror@5.49.2/lib/codemirror.css" rel="stylesheet">
- 
-    <link href="style/main.css" rel="stylesheet">
+
+    <link href="framework/style/main.css" rel="stylesheet">
 
 </head>
 
 <body>
     <div id="app">
         <v-app>
-            <v-navigation-drawer v-model="drawer" app>
-                <v-list dense>
+            <v-navigation-drawer app v-model="drawer" :width="325">
+                <v-list>
                     <v-list-item @click="">
                         <v-list-item-action>
-                            <v-icon>home</v-icon>
+                            <v-icon>fa-home</v-icon>
                         </v-list-item-action>
                         <v-list-item-content>
                             <v-list-item-title>
-                                <router-link to="/home">Home</router-link>
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item @click="">
-                        <v-list-item-action>
-                            <v-icon>home</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>
-                                <router-link to="/codes/Example_1">Example 1</router-link>
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item @click="">
-                        <v-list-item-action>
-                            <v-icon>home</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>
-                                <router-link to="/codes/Example_2">Example 2</router-link>
+                                <router-link to="/home">{{homeAlias}}</router-link>
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                 </v-list>
+                <v-treeview :items="pageItems">
+                    <template slot="label" slot-scope="{item}">
+                        <div v-if="item.id == 1">
+                            <v-icon>
+                                fa-book
+                            </v-icon>
+                            {{pagesAlias}}
+                        </div>
+                        <div v-else-if="!item.path">
+                            <v-icon>
+                                fa-folder
+                            </v-icon>
+                            {{item.title}}
+                        </div>
+                        <div v-else>
+                            <v-icon>
+                                fa-file-text-o
+                            </v-icon>
+                            <router-link :to="item.path">{{ item.title }}</router-link>
+                        </div>
+                    </template>
+                </v-treeview>
+                <v-treeview :items="codeItems">
+                    <template slot="label" slot-scope="{item}">
+                        <div v-if="item.id == 1">
+                            <v-icon>
+                                fa-tasks
+                            </v-icon>
+                            {{codesAlias}}
+                        </div>
+                        <div v-else-if="!item.path">
+                            <v-icon>
+                                fa-folder
+                            </v-icon>
+                            {{item.title}}
+                        </div>
+                        <div v-else>
+                            <v-icon>
+                                fa-file-code-o
+                            </v-icon>
+                            <router-link :to="item.path">{{ item.title }}</router-link>
+                        </div>
+                    </template>
+                </v-treeview>
+
             </v-navigation-drawer>
 
-            <v-app-bar app color="indigo" dark>
+            <v-app-bar app :color="themeColor" dark>
                 <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-                <v-toolbar-title>CodeInstant Framework</v-toolbar-title>
+                <v-toolbar-title>{{siteTitle}}</v-toolbar-title>
             </v-app-bar>
 
             <v-content>
@@ -72,9 +96,10 @@
                     </v-layout>
                 </v-container>
             </v-content>
-            <v-footer app color="indigo">
+            <v-footer app :color="themeColor" dark>
                 <v-row align="center" justify="center">
-                    <span>Prowered by <a href="https://github.com/guyoung/CodeInstant" target="_blank">CodeInstant Framework</a></span>
+                    <span>Prowered by <a href="https://github.com/guyoung/CodeInstant" target="_blank">CodeInstant
+                            Framework</a></span>
                 </v-row>
 
             </v-footer>
@@ -87,14 +112,19 @@
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios@0.19.0/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-axios@2.1.5/dist/vue-axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-markdown@2.2.4/dist/vue-markdown.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.2/lib/codemirror.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.2/mode/xml/xml.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.2/mode/css/css.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.2/mode/javascript/javascript.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-codemirror@4.0.6/dist/vue-codemirror.min.js"></script>
 
+    <script src="framework/js/home.component.js"></script>
+    <script src="framework/js/page.component.js"></script>
+    <script src="framework/js/code.component.js"></script>
+    <script src="framework/js/app.route.js"></script>
+    <script src="framework/js/app.js"></script>
 
-    <script src="app.js"></script>
 </body>
 
 </html>
