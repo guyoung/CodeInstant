@@ -1,6 +1,7 @@
 {
     "siteTitle": "CodeInstant Framework",
     "themeColor": "deep-purple darken-4",
+    "homeThemeColor": "deep-purple darken-1",
     "pageThemeColor": "deep-purple darken-1",
     "codeThemeColor": "deep-purple darken-1",
     "homeAlias": "首页",

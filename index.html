@@ -85,6 +85,13 @@
             <v-app-bar app :color="themeColor" dark>
                 <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
                 <v-toolbar-title>{{siteTitle}}</v-toolbar-title>
+                <v-spacer></v-spacer>
+
+                <a href="https://github.com/guyoung/CodeInstant" target="_blank">
+                    <v-btn icon>
+                        <v-icon>fa-github</v-icon>
+                    </v-btn>
+                </a>
             </v-app-bar>
 
             <v-content>

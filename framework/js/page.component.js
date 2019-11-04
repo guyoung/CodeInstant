@@ -6,7 +6,8 @@ var PageComponent = Vue.component('page-component', {
 
     data: function () {
         return {
-            title: '',           
+            title: '',      
+            pageThemeColor: '',     
             content: '',
         }
     },
