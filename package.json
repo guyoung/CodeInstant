@@ -18,5 +18,9 @@
     "http-server": "^0.11.1",
     "save": "^2.4.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "chokidar": "^3.3.0",
+    "node-html-parser": "^1.1.16",
+    "node-markdown": "^0.1.1"
+  }
 }
