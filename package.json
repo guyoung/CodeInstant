@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "build": "node ./build/build.js",
-    "start": "http-server ./  -c-1"
+    "start": "http-server ./ -p50000 -c-1 -o"
   },
   "author": "guyoung",
   "homepage": "https://github.com/guyoung/CodeInstant",
@@ -14,12 +14,11 @@
     "url": "git+https://github.com/guyoung/CodeInstant.git"
   },
   "license": "MIT",
-  "dependencies": {
-    "http-server": "^0.11.1",
-    "save": "^2.4.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "chokidar": "^3.3.0",
+    "colors": "^1.4.0",
+    "http-server": "^0.11.1",
     "node-html-parser": "^1.1.16",
     "node-markdown": "^0.1.1"
   }

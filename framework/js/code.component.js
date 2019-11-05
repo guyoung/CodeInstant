@@ -56,32 +56,49 @@ var CodeComponent = Vue.component('code-component', {
             frameHeight: 0,
             editorWidth: '100%',
             editorHeight: '100%',
-            htmlEditorOptions: {               
-                tabSize: 4,
+            htmlEditorOptions: {     
+                theme:"eclipse",          
+                tabSize: 2,
                 mode: "xml",
-                htmlMode: true,
-                theme: 'base16-dark',
+                htmlMode: true,        
+                styleActiveLine: true,  
+                lineNumbers: true,
+                line: true,              
+                foldgutter: true,
+                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter","CodeMirror-lint-markers"],
+                lineWrapping: true, 
+                foldGutter: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            },
+            styleEditorOptions: {     
+                theme:"eclipse",                  
+                tabSize: 2,
+                mode: "css",    
+                styleActiveLine: true,
                 lineNumbers: true,
                 line: true,
+                foldgutter: true,
+                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter","CodeMirror-lint-markers"],
+                lineWrapping: true, 
+                foldGutter: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
 
             },
-            styleEditorOptions: {               
-                tabSize: 4,
-                mode: "css",
-                htmlMode: true,
-                theme: 'base16-dark',
+            javascriptEditorOptions: {      
+                theme:"eclipse",                 
+                tabSize: 2,
+                mode: "javascript",  
+                styleActiveLine: true,
                 lineNumbers: true,
                 line: true,
-
-            },
-            javascriptEditorOptions: {               
-                tabSize: 4,
-                mode: "javascript",
-                htmlMode: true,
-                theme: 'base16-dark',
-                lineNumbers: true,
-                line: true,
-
+                foldgutter: true,
+                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter","CodeMirror-lint-markers"],
+                lineWrapping: true, 
+                foldGutter: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
             }
         }
     },
