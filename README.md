@@ -3,6 +3,8 @@ CodeInstant
 
 CodeInstant是一款前端代码快速搭建静态展示网站工具。
 
+![CodeInstant](doc/images/code_instant_01.png)
+
 ## 文件结构
 
     |- build                    脚本文件夹
