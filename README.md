@@ -11,12 +11,9 @@ CodeInstant支持在线编辑HTML、CSS、JavaScript代码并可实时预览效�
 
  * git clone https://github.com/guyoung/CaptfEncoder.git
  * cd CaptfEncoder
- * npm install
-
- 运行
- * npm start
- 或者编译运行
- * npm run build
+ * npm install 
+ * npm start   // 运行 
+ * npm run build   //或者编译运行
 
 ## 文件结构
 
