@@ -15,8 +15,8 @@
     <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/codemirror@5.49.2/lib/codemirror.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/codemirror@5.49.2/theme/eclipse.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/codemirror@5.49.2/addon/hint/show-hint.css" rel="stylesheet" >
-    <link href="https://cdn.jsdelivr.net/npm/codemirror@5.49.2/addon/fold/foldgutter.css" rel="stylesheet" >
+    <link href="https://cdn.jsdelivr.net/npm/codemirror@5.49.2/addon/hint/show-hint.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/codemirror@5.49.2/addon/fold/foldgutter.css" rel="stylesheet">
 
 
     <link href="framework/style/main.css" rel="stylesheet">
@@ -27,62 +27,46 @@
     <div id="app">
         <v-app>
             <v-navigation-drawer app v-model="drawer" :width="325">
-                <v-list>
-                    <v-list-item @click="">
-                        <v-list-item-action>
-                            <v-icon>fa-home</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>
-                                <router-link to="/home">{{homeAlias}}</router-link>
-                            </v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-list>
-                <v-treeview :items="pageItems">
-                    <template slot="label" slot-scope="{item}">
-                        <div v-if="item.id == 1">
-                            <v-icon>
-                                fa-book
-                            </v-icon>
-                            {{pagesAlias}}
-                        </div>
-                        <div v-else-if="!item.path">
-                            <v-icon>
-                                fa-folder
-                            </v-icon>
-                            {{item.title}}
-                        </div>
-                        <div v-else>
-                            <v-icon>
-                                fa-file-text-o
-                            </v-icon>
-                            <router-link :to="item.path">{{ item.title }}</router-link>
-                        </div>
-                    </template>
-                </v-treeview>
-                <v-treeview :items="codeItems">
-                    <template slot="label" slot-scope="{item}">
-                        <div v-if="item.id == 1">
-                            <v-icon>
-                                fa-tasks
-                            </v-icon>
-                            {{codesAlias}}
-                        </div>
-                        <div v-else-if="!item.path">
-                            <v-icon>
-                                fa-folder
-                            </v-icon>
-                            {{item.title}}
-                        </div>
-                        <div v-else>
-                            <v-icon>
-                                fa-file-code-o
-                            </v-icon>
-                            <router-link :to="item.path">{{ item.title }}</router-link>
-                        </div>
-                    </template>
-                </v-treeview>
+                <div v-for="content in contents">
+                    <div v-if="content.type == 'page'">
+                        <v-list>
+                            <v-list-item @click="">
+                                <v-list-item-action>
+                                    <v-icon>{{content.icon}}</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>
+                                        <router-link :to="'/'+content.name">{{content.title}}</router-link>
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </v-list>
+                    </div>
+                    <div v-else>
+                        <v-treeview :items="contentItems[content.name]">
+                            <template slot="label" slot-scope="{item}">
+                                <div v-if="item.id == 1">
+                                    <v-icon>
+                                        {{content.icon}}
+                                    </v-icon>
+                                    {{content.title}}
+                                </div>
+                                <div v-else-if="!item.path">
+                                    <v-icon>
+                                        {{content.folderIcon}}
+                                    </v-icon>
+                                    {{item.title}}
+                                </div>
+                                <div v-else>
+                                    <v-icon>
+                                        {{content.itemIcon}}
+                                    </v-icon>
+                                    <router-link :to="item.path">{{ item.title }}</router-link>
+                                </div>
+                            </template>
+                        </v-treeview>
+                    </div>
+                </div>
 
             </v-navigation-drawer>
 
@@ -134,7 +118,7 @@
     <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.2/addon/hint/javascript-hint.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.2/addon/comment/comment.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.2/addon/fold/foldcode.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.2/addon/fold/foldcode.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.2/addon/fold/foldgutter.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.2/addon/fold/xml-fold.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/codemirror@5.49.2/addon/fold/indent-fold.js"></script>
@@ -146,10 +130,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/vue-codemirror@4.0.6/dist/vue-codemirror.min.js"></script>
 
-    <script src="framework/js/home.component.js"></script>
     <script src="framework/js/page.component.js"></script>
-    <script src="framework/js/code.component.js"></script>
-    <script src="framework/js/app.route.js"></script>
+    <script src="framework/js/document.component.js"></script>
+    <script src="framework/js/code.component.js"></script>  
     <script src="framework/js/app.js"></script>
 
 </body>

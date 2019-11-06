@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "title": "代码",
+    "children": [
+      { "id": 2, "title": "Code 3", "path": "/code/code_3" },
+      {
+        "id": 3,
+        "title": "vue",
+        "path": "",
+        "children": [
+          {
+            "id": 4,
+            "title": "vue_quick_start",
+            "path": "/code/vue/vue_quick_start"
+          },
+          { "id": 5, "title": "Code 2", "path": "/code/vue/vue_route" }
+        ]
+      }
+    ]
+  }
+]

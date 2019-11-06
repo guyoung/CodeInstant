@@ -6,237 +6,174 @@ const htmlParser = require('node-html-parser');
 const opener = require('opener');
 const colors = require('colors/safe');
 
-const watcher = chokidar.watch('./data', {
-    ignored: /(^|[\/\\])\..|\.config\.json$/, // ignore dotfiles
-    persistent: true
-});
 
 var ifaces = os.networkInterfaces();
 
-var initialized = false;
 var changed = false;
-var working = false;
 
-// Add event listeners.
-watcher
-    .on('addDir', () => change())
-    .on('unlinkDir', () => change())
-    .on('add', () => change())
-    .on('change', () => change())
-    .on('unlink', () => change())
+var appConfig;
 
-execute();
+try {
+    var data = fs.readFileSync('./data/app.config.json');
 
+    appConfig = JSON.parse(data);
 
-setInterval(execute, 1 * 1000);
-
-var HttpServer = require("http-server");
-
-var host = '0.0.0.0';
-var port = 50000;
-var protocol = 'http://'
-var open = true;
-
-var server = HttpServer.createServer({
-    root: './',
-    cache: -1
-})
-
-server.listen(port, host, function () {
-    var canonicalHost = host === '0.0.0.0' ? '127.0.0.1' : host;
-
-    console.log([colors.yellow('Starting up http-server, serving '),
-    colors.cyan(server.root),    
-    colors.yellow('\nAvailable on:')
-    ].join(''));
-
-    if (host !== '0.0.0.0') {
-        console.log(('  ' + protocol + canonicalHost + ':' + colors.green(port.toString())));
+    if (appConfig) {
+        initialize();
+        execute();
     }
-    else {
-        Object.keys(ifaces).forEach(function (dev) {
-            ifaces[dev].forEach(function (details) {
-                if (details.family === 'IPv4') {
-                    console.log(('  ' + protocol + details.address + ':' + colors.green(port.toString())));
-                }
-            });
-        });
-    }    
 
-    console.log('Hit CTRL-C to stop the server');
 
-    if (open) {
-        opener(protocol + canonicalHost + ':' + port+'/index.html');
-    }
-});
 
-initialized = true;
-
-function change() {
-    if (initialized) {
-        changed = true;
-    }
+} catch (e) {
+    console.log(e.message)
 }
 
-var pageID = 1;
-var codeID = 1;
 
+function initialize() {
+    const watcher = chokidar.watch('./data', {
+        ignored: /(^|[\/\\])\..|sitemap\.json$|\.config\.json/, // ignore dotfiles
+        persistent: true
+    });
+
+    watcher
+        .on('addDir', () => change())
+        .on('unlinkDir', () => change())
+        .on('add', () => change())
+        .on('change', () => change())
+        .on('unlink', () => change())
+
+    var HttpServer = require("http-server");
+
+    var host = '0.0.0.0';
+    var port = 50000;
+    var protocol = 'http://'
+    var open = true;
+
+    var server = HttpServer.createServer({
+        root: './',
+        cache: -1
+    })
+
+    server.listen(port, host, function () {
+        var canonicalHost = host === '0.0.0.0' ? '127.0.0.1' : host;
+
+        console.log([colors.yellow('Starting up http-server, serving '),
+        colors.cyan(server.root),
+        colors.yellow('\nAvailable on:')
+        ].join(''));
+
+        if (host !== '0.0.0.0') {
+            console.log(('  ' + protocol + canonicalHost + ':' + colors.green(port.toString())));
+        }
+        else {
+            Object.keys(ifaces).forEach(function (dev) {
+                ifaces[dev].forEach(function (details) {
+                    if (details.family === 'IPv4') {
+                        console.log(('  ' + protocol + details.address + ':' + colors.green(port.toString())));
+                    }
+                });
+            });
+        }
+
+        console.log('Hit CTRL-C to stop the server');
+
+        if (open) {
+            opener(protocol + canonicalHost + ':' + port + '/index.html');
+        }
+    });
+
+}
+
+
+var ids = {
+
+};
+
+function change() {
+    changed = true;
+}
 
 function execute() {
-
-    if ((!initialized || changed) && (!working)) {
+    if (changed) {
+        changed = false;
 
         console.log('[' + getNowFormatDate() + ']   ' + 'Bulid start');
 
-        changed = false;
-        working = true;
+        for (var content of appConfig.contents) {
 
-        const pageDir = './data/pages'
-        const pageConfigFile = './data/pages/page.config.json'
+            if (content.type != 'page') {
+                const contentDir = './data/' + content.name;
+                const contentSitemapFile = './data/' + content.name + '/sitemap.json';
 
-        try {
-            var pageConfig = [];
-            var rootItem = {};
-            rootItem.id = pageID = 1;
-            rootItem.name = 'pages';
-            rootItem.title = '';
-            rootItem.children = [];
+                try {
+                    var sitemap = [];
+                    var rootItem = {};
+                    rootItem.id = ids[content.name] = 1;
+                    rootItem.title = content.title;
+                    rootItem.children = [];
 
-            var dirs = fs.readdirSync(pageDir);
+                    var dirs = fs.readdirSync(contentDir);
 
-            for (var dir of dirs) {
-                var stat = fs.statSync(pageDir + "/" + dir);
+                    for (var dir of dirs) {
+                        var stat = fs.statSync(contentDir + "/" + dir);
 
-                if (stat.isDirectory()) {
+                        if (stat.isDirectory()) {
+                            generateItems(content, rootItem, contentDir, dir);
+                        }
+                    }
 
-                    generatePageItems(rootItem, pageDir, dir);
+                    sitemap.push(rootItem);
+
+                    fs.writeFileSync(contentSitemapFile, JSON.stringify(sitemap));
+
+                }
+                catch {
+
                 }
             }
-
-            pageConfig.push(rootItem);
-
-            fs.writeFileSync(pageConfigFile, JSON.stringify(pageConfig))
-        }
-        catch {
-
-        }
-
-        const codeDir = './data/codes'
-        const codeConfigFile = './data/codes/code.config.json'
-
-        try {
-            var codeConfig = [];
-            var rootItem = {};
-            rootItem.id = codeID = 1;
-            rootItem.name = 'codes';
-            rootItem.title = '';
-            rootItem.children = [];
-
-            var dirs = fs.readdirSync(codeDir);
-
-            for (var dir of dirs) {
-                var stat = fs.statSync(codeDir + "/" + dir);
-
-                if (stat.isDirectory()) {
-
-                    generateCodeItems(rootItem, codeDir, dir);
-                }
-            }
-
-            codeConfig.push(rootItem);
-
-            fs.writeFileSync(codeConfigFile, JSON.stringify(codeConfig))
-        }
-        catch {
-
         }
 
         console.log('[' + getNowFormatDate() + ']   ' + 'Bulid finish');
-
-        working = false;
     }
+
+    setTimeout(execute, 1 * 1000);
 
 
 }
 
-function generatePageItems(parent, parentDir, dir) {
+function generateItems(content, parent, parentDir, dir) {
     try {
         var stat = fs.statSync(parentDir + '/' + dir);
 
         if (stat.isDirectory()) {
-            var file = parentDir + '/' + dir + '/index.md';
 
-            if (fs.existsSync(file)) {
-                var id = ++pageID;
-                var title = dir;
-                try {
-                    const text = fs.readFileSync(file, 'utf-8');
-                    const html = md(text, true, 'h1');
-                    const node = htmlParser.parse(html).querySelector('h1');
+            var file;
 
-                    if (node && node.childNodes.length > 0) {
-                        title = node.childNodes[0].rawText;
-                    }
-                } catch {
-
-                }
-
-                var path = parentDir + '/' + dir;
-                if (path.startsWith('./data')) {
-                    path = path.substring(6, path.length);
-                }
-
-                parent.children.push({
-                    id: id,
-                    title: title,
-                    path: path
-                })
+            if (content.type == 'code') {
+                file = parentDir + '/' + dir + '/index.html';
             } else {
-
-                var item = {
-                    id: ++pageID,
-                    title: dir,
-                    path: '',
-                    children: []
-                }
-
-                var subDirs = fs.readdirSync(parentDir + '/' + dir);
-
-                for (var subDir of subDirs) {
-                    var stat = fs.statSync(parentDir + '/' + dir + "/" + subDir);
-
-                    if (stat.isDirectory()) {
-
-                        generatePageItems(item, parentDir + '/' + dir, subDir);
-                    }
-                }
-
-                parent.children.push(item);
+                file = parentDir + '/' + dir + '/index.md';
             }
-        }
-    } catch {
-
-    }
-
-}
-
-
-function generateCodeItems(parent, parentDir, dir) {
-    try {
-        var stat = fs.statSync(parentDir + '/' + dir);
-
-        if (stat.isDirectory()) {
-            var file = parentDir + '/' + dir + '/index.html';
 
             if (fs.existsSync(file)) {
-                var id = ++codeID;
+                var id = ++ids[content.name];
                 var title = dir;
                 try {
                     const text = fs.readFileSync(file, 'utf-8');
-                    const node = htmlParser.parse(text).querySelector('title');
+                    if (content.type == 'code') {
+                        const html = md(text, true, 'h1');
+                        const node = htmlParser.parse(html).querySelector('h1');
 
-                    if (node && node.childNodes.length > 0) {
-                        title = node.childNodes[0].rawText;
+                        if (node && node.childNodes.length > 0) {
+                            title = node.childNodes[0].rawText;
+                        }
+                    } else {
+                        const node = htmlParser.parse(text).querySelector('title');
+
+                        if (node && node.childNodes.length > 0) {
+                            title = node.childNodes[0].rawText;
+                        }
                     }
                 } catch {
 
@@ -254,7 +191,7 @@ function generateCodeItems(parent, parentDir, dir) {
                 })
             } else {
                 var item = {
-                    id: ++codeID,
+                    id: ++ids[content.name],
                     title: dir,
                     path: '',
                     children: []
@@ -267,18 +204,19 @@ function generateCodeItems(parent, parentDir, dir) {
 
                     if (stat.isDirectory()) {
 
-                        generateCodeItems(item, parentDir + '/' + dir, subDir);
+                        generateItems(content, item, parentDir + '/' + dir, subDir);
                     }
                 }
 
                 parent.children.push(item);
             }
         }
-    } catch {
-
+    } catch(e) {
+        console.log(e.message)
     }
 
 }
+
 
 function getNowFormatDate() {
     var date = new Date();

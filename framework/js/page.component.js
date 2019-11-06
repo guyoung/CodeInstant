@@ -6,26 +6,34 @@ var PageComponent = Vue.component('page-component', {
 
     data: function () {
         return {
-            title: '',      
-            pageThemeColor: '',     
+            title: '',   
+            themeColor: '',            
             content: '',
         }
     },
 
-    created: function () {
+    created: function () {  
         Vue.axios.get('data/app.config.json').then((response) => {
             try {
                 var config = JSON.parse(JSON.stringify(response.data));
-                
-                if (config.pageThemeColor) {
-                    this.pageThemeColor = config.pageThemeColor;
+
+                var content;
+
+                for (var item of config.contents) {
+                 
+                    if (item.name == this.$route.name) {
+                        content = item;
+                    }
+                }             
+                if (content && content.themeColor) {
+                    this.themeColor = content.themeColor;
                 }
-               
 
             } catch {
 
             }
 
+           
         }).catch((err) => {
 
         });

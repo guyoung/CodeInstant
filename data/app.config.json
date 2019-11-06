@@ -1,10 +1,31 @@
 {
-    "siteTitle": "CodeInstant Framework",
-    "themeColor": "deep-purple darken-4",
-    "homeThemeColor": "deep-purple darken-1",
-    "pageThemeColor": "deep-purple darken-1",
-    "codeThemeColor": "deep-purple darken-1",
-    "homeAlias": "首页",
-    "pagesAlias": "文档",
-    "codesAlias": "代码"
+  "siteTitle": "CodeInstant Framework",
+  "themeColor": "deep-purple darken-4",
+  "contents": [
+    {
+      "name": "home",
+      "title": "首页",
+      "type": "page",
+      "icon": "fa-home",
+      "themeColor": "deep-purple darken-4"
+    },
+    {
+      "name": "document",
+      "title": "文档",
+      "type": "document",
+      "icon": "fa-book",
+      "folderIcon": "fa-folder",
+      "itemIcon": "fa-file-text-o",
+      "themeColor": "deep-purple darken-4"
+    },
+    {
+      "name": "code",
+      "title": "代码",
+      "type": "code",
+      "icon": "fa-tasks",
+      "folderIcon": "fa-folder",
+      "itemIcon": "fa-file-code-o",
+      "themeColor": "deep-purple darken-4"
+    }
+  ]
 }

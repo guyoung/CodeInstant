@@ -1,6 +1,6 @@
 var CodeComponent = Vue.component('code-component', {
     template: ` 
-    <v-tabs fixed-tabs :backgroundColor="codeThemeColor" dark>
+    <v-tabs fixed-tabs :backgroundColor="themeColor" dark>
         <v-tab>
             Preview
         </v-tab>
@@ -46,9 +46,9 @@ var CodeComponent = Vue.component('code-component', {
 
     data: function () {
         return {
-            tab: null,
-            codeThemeColor: '',
-            title: '',           
+            tab: null,           
+            title: '',     
+            themeColor: '',      
             htmlContent: '',
             styleContent: '',
             javascriptContent: '',
@@ -117,35 +117,40 @@ var CodeComponent = Vue.component('code-component', {
         Vue.axios.get('data/app.config.json').then((response) => {
             try {
                 var config = JSON.parse(JSON.stringify(response.data));
-                
-                if (config.codeThemeColor) {
-                    this.codeThemeColor = config.codeThemeColor;
+
+                var content;
+
+                for (var item of config.contents) {
+                 
+                    if (item.name == this.$route.name) {
+                        content = item;
+                    }
+                }             
+                if (content && content.themeColor) {
+                    this.themeColor = content.themeColor;
                 }
-               
 
             } catch {
 
             }
 
+           
         }).catch((err) => {
 
         });
-
     },
 
-    mounted: function () {
-
+    mounted: function () {       
+      
         this.load();
 
-        setTimeout(() => {
-            
+        setTimeout(() => {            
 
             this.frameWidth = this.$refs.previewDiv.offsetWidth;
             this.frameHeight = document.documentElement.clientHeight - 184
 
             this.editorWidth = this.$refs.previewDiv.offsetWidth + 'px';
-            this.editorHeight = (document.documentElement.clientHeight - 184) + 'px'
-            
+            this.editorHeight = (document.documentElement.clientHeight - 184) + 'px'            
 
         }, 500);
 

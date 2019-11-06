@@ -1,4 +1,4 @@
-var HomeComponent = Vue.component('home-component', {
+var DocumentComponent = Vue.component('document-component', {
     template: `
 <div class="markdownDiv">
     <vue-markdown :source="content"></vue-markdown>
@@ -6,8 +6,8 @@ var HomeComponent = Vue.component('home-component', {
 
     data: function () {
         return {
-            title: '',   
-            homeThemeColor: '',        
+            title: '',
+            themeColor: '',
             content: '',
         }
     },
@@ -16,15 +16,23 @@ var HomeComponent = Vue.component('home-component', {
         Vue.axios.get('data/app.config.json').then((response) => {
             try {
                 var config = JSON.parse(JSON.stringify(response.data));
-                
-                if (config.homeThemeColor) {
-                    this.homeThemeColor = config.homeThemeColor;
+
+                var content;
+
+                for (var item of config.contents) {
+
+                    if (item.name == this.$route.name) {
+                        content = item;
+                    }
                 }
-               
+                if (content && content.themeColor) {
+                    this.themeColor = content.themeColor;
+                }
 
             } catch {
 
             }
+
 
         }).catch((err) => {
 
@@ -41,7 +49,7 @@ var HomeComponent = Vue.component('home-component', {
 
     beforeRouteUpdate(to, from, next) {
         if (to.fullPath != from.fullPath) {
-           
+
             next();
 
             this.load();
@@ -51,11 +59,11 @@ var HomeComponent = Vue.component('home-component', {
 
     methods: {
         load() {
-            var url = 'data/home/index.md';
-    
+            var url = 'data' + this.$route.path + '/index.md';
+
             Vue.axios.get(url).then((response) => {
                 this.content = response.data
-    
+
             }).catch((err) => {
                 this.content = '';
             });
