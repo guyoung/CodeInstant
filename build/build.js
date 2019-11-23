@@ -46,7 +46,7 @@ function initialize() {
     var HttpServer = require("http-server");
 
     var host = '0.0.0.0';
-    var port = 50000;
+    var port = 8088;
     var protocol = 'http://'
     var open = true;
 
@@ -162,18 +162,19 @@ function generateItems(content, parent, parentDir, dir) {
                 try {
                     const text = fs.readFileSync(file, 'utf-8');
                     if (content.type == 'code') {
+                        const node = htmlParser.parse(text).querySelector('title');
+
+                        if (node && node.childNodes.length > 0) {
+                            title = node.childNodes[0].rawText;
+                        }
+                    } else {
                         const html = md(text, true, 'h1');
                         const node = htmlParser.parse(html).querySelector('h1');
 
                         if (node && node.childNodes.length > 0) {
                             title = node.childNodes[0].rawText;
                         }
-                    } else {
-                        const node = htmlParser.parse(text).querySelector('title');
-
-                        if (node && node.childNodes.length > 0) {
-                            title = node.childNodes[0].rawText;
-                        }
+                        
                     }
                 } catch {
 
