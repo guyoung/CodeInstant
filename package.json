@@ -18,7 +18,7 @@
   "devDependencies": {
     "chokidar": "^3.3.0",
     "colors": "^1.4.0",
-    "http-server": "^0.11.1",
+    "http-server": "^0.11.2",
     "node-html-parser": "^1.1.16",
     "node-markdown": "^0.1.1"
   }
